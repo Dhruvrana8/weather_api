@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'dart:convert' as convert;
 import "package:http/http.dart" as http;
+import 'package:weather_api/models/currentCityName.dart';
+import 'package:weather_api/models/currentDate.dart';
+import 'package:weather_api/models/currentTemprature.dart';
+import 'package:weather_api/models/line.dart';
+import 'package:weather_api/models/minMaxTemp.dart';
+import 'package:weather_api/models/weatherDetails.dart';
 import 'package:weather_api/models/weathermodel.dart';
-import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
   final double longitude;
@@ -17,10 +21,6 @@ class HomeScreen extends StatefulWidget {
 class HomeScreenState extends State<HomeScreen> {
   late WeatherApi weather;
   bool isReady = false;
-  // DateTime now = DateTime.now();
-  // String formattedTime = DateFormat('kk:mm:ss').format(now);
-  // String formattedDate = DateFormat('EEE d MMM').format(now);
-  // late final WeatherApi weather;
   @override
   void initState() {
     super.initState();
@@ -41,16 +41,16 @@ class HomeScreenState extends State<HomeScreen> {
       });
       // var Temprature = convert.jsonDecode(data)["main"]["temp"];
       var cityName = convert.jsonDecode(data)["name"];
-      print(cityName);
+      // print(cityName);
     } else {
-      print(response.statusCode);
+      // print(response.statusCode);
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return !isReady
-        ? Center(
+        ? const Center(
             child: CircularProgressIndicator(),
           )
         : ListView(
@@ -58,60 +58,36 @@ class HomeScreenState extends State<HomeScreen> {
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.1,
               ),
-              Text(
-                weather.name,
-                style: const TextStyle(
-                  fontSize: 65,
-                  color: Colors.white,
-                ),
-              ),
+              CurrentCityName(cityName: weather.name),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.2,
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 16),
-                child: Row(
-                  children: [
-                    Text(
-                      (weather.main.temp - 273.15).toStringAsFixed(2),
-                      style: GoogleFonts.openSansCondensed(
-                        fontSize: 65,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const Text("°C",
-                        style: TextStyle(fontSize: 70, color: Colors.white))
-                  ],
-                ),
-              ),
+              CurrentTemp(temp: weather.main.temp),
               SizedBox(height: MediaQuery.of(context).size.height * 0.001),
-              Row(
-                children: [
-                  Container(
-                    // decoration: BoxDecoration(color: Colors.red),
-                    child: Image.asset(
-                      "images/png/weather_icons/${weather.weather[0].icon}@2x.png",
-                      height: MediaQuery.of(context).size.height * 0.1,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Text(weather.weather[0].main,
-                      style: const TextStyle(fontSize: 40, color: Colors.white))
-                ],
-              ),
+              WeatherDetails(
+                  icon: weather.weather[0].icon, main: weather.weather[0].main),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.1,
               ),
-              const Center(
-                child: Text(
-                  "Jan 29 2022",
-                  style: TextStyle(color: Colors.white),
+              const CurrentDate(),
+              const Line(),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.01,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    MinMaxFeelsLikeTemp(
+                        name: "Min Temp", value: weather.main.tempMin),
+                    MinMaxFeelsLikeTemp(
+                        name: "Feels Like", value: weather.main.feelsLike),
+                    MinMaxFeelsLikeTemp(
+                        name: "Max Temp", value: weather.main.tempMax),
+                  ],
                 ),
               ),
-              Container(
-                  width: MediaQuery.of(context).size.width * 1,
-                  height: 1,
-                  color: Colors.white30),
             ],
           );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -7,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:weather_api/Screen/homePage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:weather_api/models/backgroundImage.dart';
 
 import 'models/weathermodel.dart';
 
@@ -88,13 +90,20 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
         home: Scaffold(
           extendBodyBehindAppBar: true,
           appBar: AppBar(
-            title: const Text("Weather app"),
+            title: Text(
+              "Weather app",
+              style: GoogleFonts.openSansCondensed(
+                // fontWeight: FontWeight.w700,
+                fontSize: 30,
+              ),
+            ),
             backgroundColor: Colors.transparent,
             elevation: 0,
             centerTitle: true,
@@ -111,7 +120,9 @@ class _MyAppState extends State<MyApp> {
           ),
           body: Stack(
             children: [
-              SvgPicture.asset("assets/images/5.svg", fit: BoxFit.cover),
+              // SvgPicture.asset("assets/images/5.svg", fit: BoxFit.cover),
+              // SvgPicture.asset("images/svg/images/6.svg", fit: BoxFit.cover),
+              const BackGroundImage(),
               Container(
                 decoration: const BoxDecoration(color: Colors.black38),
               ),
